@@ -1,121 +1,39 @@
-<!-- Sidebar -->
-
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Sidebar Website</title>
-
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial;
-   }
-    /* Sidebar */
-    .sidebar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 260px;
-      height: 100vh;
-      background: #202123;
-      color: white;
-      transform: translateX(-100%);
-      transition: 0.3s ease;
-      padding-top: 60px;
-      z-index: 2;
-    }
-
-    .sidebar.active {
-      transform: translateX(0);
-    }
-
-    /* Overlay */
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.4);
-      opacity: 0;
-      visibility: hidden;
-      transition: 0.3s;
-    }
-
-    .overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    /* MAIN PAGE WRAPPER */
-    .main {
-      transition: margin-left 0.3s ease;
-      margin-left: 0;
-
-      display: flex;
-      flex-direction: column;
-      align-items: center; 
-      text-align: center;
-    }
-
-    /* When sidebar is open */
-    .main.shift {
-      margin-left: 260px;
-    }
-
-    /* Topbar */
-    .topbar {
-      height: 60px;
-      display: flex;
-      align-items: center;
-      padding: 0 20px;
-      background: #111;
-      color: white;
-      width: 100%;
-    }
-
-    /* Buttons */
-    .menu-btn, .close-btn {
-      font-size: 20px;
-      cursor: pointer;
-      background: none;
-      border: none;
-      color: white;
-    }
-  </style>
+  <title>Home</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
   <!-- Sidebar -->
-  <div id="sidebar" class="sidebar">
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="projects.html">Projects</a>
-    <a href="contact.html">Contact</a>
-  </div>
+  <div id="sidebar" class="sidebar"></div>
 
-  <!-- Main area -->
-  <div style="width:100%;">
-    
-    <!-- Top bar -->
-    <div class="topbar">
-      <span class="menu-btn" onclick="toggleSidebar()">☰</span>
-      <h2>My Website</h2>
-    </div>
+  <!-- Overlay -->
+  <div class="overlay" onclick="toggleSidebar()"></div>
 
-    <!-- Page content -->
-    <div class="content">
-      <h1>Welcome!</h1>
-      <p>This is the homepage.</p>
-    </div>
+  <!-- Main content -->
+  <div class="main">
+
+    <button onclick="toggleSidebar()">☰</button>
+
+    <h1>Home</h1>
+    <p>Your homepage content goes here.</p>
 
   </div>
 
+  <!-- JS -->
+  <script src="js/layout.js"></script>
+
+  <!-- Load sidebar component -->
   <script>
-    function toggleSidebar() {
-      document.getElementById("sidebar").classList.toggle("active");
-      document.getElementById("overlay").classList.toggle("active");
-      document.getElementById("main").classList.toggle("shift");
-    }
-</script>
+    fetch("components/sidebar.html")
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById("sidebar").innerHTML = data;
+      });
+  </script>
 
 </body>
 </html>
