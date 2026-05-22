@@ -24,24 +24,13 @@
 
   <!-- Main content -->
   <div class="main">
-
     <button onclick="toggleSidebar()">☰</button>
-
     <h1>Home</h1>
     <p>Your homepage content goes here.</p>
-
   </div>
 
   <!-- JS -->
   <script src="js/layout.js"></script>
 
-  <!-- Load sidebar component -->
-  <script>
-    fetch("components/sidebar.html")
-      .then(res => res.text())
-      .then(data => {
-        document.getElementById("sidebar").innerHTML = data;
-      });
-  </script>
 </body>
 </html>
