@@ -3,23 +3,42 @@ body {
   font-family: Arial;
 }
 
+.sidebar-trigger {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 1000;
+}
+
+.sidebar-edge {
+  position: absolute;
+  top: 16px;
+  left: 12px;
+  font-size: 22px;
+  cursor: pointer;
+}
+
 .sidebar {
   position: fixed;
   top: 0;
   left: 0;
   width: 260px;
   height: 100vh;
-
-  background: #f7f7f8;   /* softer like ChatGPT light mode */
+  background: #f7f7f8;
   color: #111;
-
   transform: translateX(-105%);
   transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-
   padding: 12px;
   box-shadow: 4px 0 20px rgba(0,0,0,0.08);
+}
 
-  z-index: 1000;
+.sidebar-trigger:hover .sidebar {
+  transform: translateX(0);
+}
+
+.sidebar-trigger:hover .sidebar-edge {
+  opacity: 0;
 }
 
 .sidebar.active {
