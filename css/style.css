@@ -57,7 +57,8 @@ body {
 .sidebar-inner {
   display: flex;
   flex-direction: column;
-  padding-top: 48px;
+  align-items: center;
+  padding-top: 120px;
 }
 
 .sidebar a:hover {
