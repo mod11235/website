@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FNAF Voice Archive</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --card: #16161f;
+      --border: #2a2a3a;
+      --accent: #ff6b1a;
+      --accent2: #ffb347;
+      --text: #e8e8f0;
+      --muted: #6b6b88;
+      --active: #ff6b1a22;
+      --line-bg: #1a1a26;
+      --line-border: #2a2a3a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Share Tech Mono', monospace;
+      min-height: 100vh;
+      background-image:
+        radial-gradient(ellipse at 20% 0%, #ff6b1a0a 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 100%, #ff3a0a08 0%, transparent 50%);
+    }
+
+    header {
+      text-align: center;
+      padding: 48px 24px 32px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 1px;
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent);
+    }
+
+    h1 {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(1.6rem, 4vw, 2.8rem);
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      text-shadow: 0 0 30px #ff6b1a55;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.8rem;
+      margin-top: 8px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    /* Sort controls */
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      padding: 28px 24px 20px;
+      flex-wrap: wrap;
+    }
+
+    .sort-btn {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 10px 24px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .sort-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .sort-btn.active {
+      background: var(--active);
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: 0 0 12px #ff6b1a22;
+    }
+
+    /* Grid */
+    .catalogue {
+      padding: 16px 24px 60px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Character card */
+    .char-section {
+      margin-bottom: 40px;
+    }
+
+    .char-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px 14px 0 0;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--accent);
+    }
+
+    .char-portrait {
+      width: 52px;
+      height: 52px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      /* placeholder style if no image */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .char-portrait img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 9px;
+    }
+
+    .char-info { flex: 1; }
+
+    .char-name {
+      font-family: 'Orbitron', monospace;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent2);
+      letter-spacing: 0.08em;
+    }
+
+    .char-meta {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 3px;
+      letter-spacing: 0.1em;
+    }
+
+    .char-count {
+      font-size: 0.72rem;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4px 12px;
+    }
+
+    /* Lines grid */
+    .lines-grid {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 14px 14px;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
+    /* Individual voice line */
+    .voice-line {
+      background: var(--line-bg);
+      border: 1px solid var(--line-border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .voice-line:hover {
+      border-color: var(--accent);
+      background: #ff6b1a0a;
+    }
+
+    .voice-line.playing {
+      border-color: var(--accent);
+      background: var(--active);
+      box-shadow: 0 0 10px #ff6b1a18;
+    }
+
+    .play-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid var(--accent);
+      background: transparent;
+      color: var(--accent);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 0.7rem;
+      transition: background 0.15s;
+      padding-left: 2px;
+    }
+
+    .play-btn:hover { background: var(--active); }
+    .play-btn.playing { padding-left: 0; }
+
+    .line-label {
+      font-size: 0.72rem;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+    }
+
+    /* Alphabetical view — flat list with letter dividers */
+    .alpha-section { margin-bottom: 32px; }
+
+    .alpha-divider {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      padding: 8px 4px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 10px;
+    }
+
+    .alpha-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
+    .alpha-line {
+      background: var(--line-bg);
+      border: 1px solid var(--line-border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: border-color 0.2s;
+    }
+
+    .alpha-line:hover { border-color: var(--accent); }
+    .alpha-line.playing { border-color: var(--accent); background: var(--active); }
+
+    .line-char-tag {
+      font-size: 0.6rem;
+      color: var(--accent2);
+      background: #ffb34715;
+      border: 1px solid #ffb34730;
+      border-radius: 4px;
+      padding: 1px 5px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 900px) {
+      .lines-grid, .alpha-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .lines-grid, .alpha-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>FNAF VOICE ARCHIVE</h1>
+  <p class="subtitle">Animatronic Voice Line Catalogue</p>
+</header>
+
+<div class="controls">
+  <button class="sort-btn active" onclick="setSort('character')" id="btn-character">By Character</button>
+  <button class="sort-btn" onclick="setSort('alpha')" id="btn-alpha">Alphabetical</button>
+  <button class="sort-btn" onclick="setSort('game')" id="btn-game">By Game</button>
+</div>
+
+<div class="catalogue" id="catalogue"></div>
+
+<script>
+// ─────────────────────────────────────────────
+//  DATA — add your characters and lines here
+//  portrait: path to your PNG, e.g. "images/chica.png"
+//  audio:    path to your audio file, e.g. "audio/chica_1.mp3"
+//  label:    display name for the line
+// ─────────────────────────────────────────────
+const data = [
+  {
+    character: "Freddy Fazbear",
+    game: "FNAF 1",
+    gameOrder: 1,
+    portrait: "",      // e.g. "images/freddy.png"
+    emoji: "🎩",
+    lines: [
+      { label: "Freddy 1", audio: "audio/freddy_1.mp3" },
+      { label: "Freddy 2", audio: "audio/freddy_2.mp3" },
+      { label: "Freddy 3", audio: "audio/freddy_3.mp3" },
+      { label: "Freddy 4", audio: "audio/freddy_4.mp3" },
+      { label: "Freddy 5", audio: "audio/freddy_5.mp3" },
+      { label: "Freddy 6", audio: "audio/freddy_6.mp3" },
+    ]
+  },
+  {
+    character: "Chica",
+    game: "FNAF 1",
+    gameOrder: 1,
+    portrait: "",
+    emoji: "🐦",
+    lines: [
+      { label: "Chica 1", audio: "audio/chica_1.mp3" },
+      { label: "Chica 2", audio: "audio/chica_2.mp3" },
+      { label: "Chica 3", audio: "audio/chica_3.mp3" },
+      { label: "Chica 4", audio: "audio/chica_4.mp3" },
+    ]
+  },
+  {
+    character: "Bonnie",
+    game: "FNAF 1",
+    gameOrder: 1,
+    portrait: "",
+    emoji: "🐰",
+    lines: [
+      { label: "Bonnie 1", audio: "audio/bonnie_1.mp3" },
+      { label: "Bonnie 2", audio: "audio/bonnie_2.mp3" },
+      { label: "Bonnie 3", audio: "audio/bonnie_3.mp3" },
+    ]
+  },
+  {
+    character: "Toy Foxy",
+    game: "FNAF 2",
+    gameOrder: 2,
+    portrait: "",
+    emoji: "🦊",
+    lines: [
+      { label: "Toy Foxy 1", audio: "audio/toy_foxy_1.mp3" },
+      { label: "Toy Foxy 2", audio: "audio/toy_foxy_2.mp3" },
+      { label: "Toy Foxy 3", audio: "audio/toy_foxy_3.mp3" },
+      { label: "Toy Foxy 4", audio: "audio/toy_foxy_4.mp3" },
+    ]
+  },
+  {
+    character: "Toy Chica",
+    game: "FNAF 2",
+    gameOrder: 2,
+    portrait: "",
+    emoji: "🐤",
+    lines: [
+      { label: "Toy Chica 1", audio: "audio/toy_chica_1.mp3" },
+      { label: "Toy Chica 2", audio: "audio/toy_chica_2.mp3" },
+    ]
+  },
+];
+
+// ─────────────────────────────────────────────
+let currentSort = 'character';
+let currentAudio = null;
+let currentBtn = null;
+
+function setSort(mode) {
+  currentSort = mode;
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + mode).classList.add('active');
+  render();
+}
+
+function stopCurrent() {
+  if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
+  if (currentBtn) {
+    currentBtn.innerHTML = '▶';
+    currentBtn.classList.remove('playing');
+    currentBtn.closest('.voice-line, .alpha-line')?.classList.remove('playing');
+  }
+  currentAudio = null;
+  currentBtn = null;
+}
+
+function playLine(audioSrc, btn, lineEl) {
+  if (currentBtn === btn) { stopCurrent(); return; }
+  stopCurrent();
+  const audio = new Audio(audioSrc);
+  currentAudio = audio;
+  currentBtn = btn;
+  btn.innerHTML = '⏹';
+  btn.classList.add('playing');
+  lineEl.classList.add('playing');
+  audio.play().catch(() => {});
+  audio.onended = () => {
+    btn.innerHTML = '▶';
+    btn.classList.remove('playing');
+    lineEl.classList.remove('playing');
+    currentAudio = null;
+    currentBtn = null;
+  };
+}
+
+function makeLineEl(line, charName, cls = 'voice-line') {
+  const div = document.createElement('div');
+  div.className = cls;
+
+  const btn = document.createElement('button');
+  btn.className = 'play-btn';
+  btn.innerHTML = '▶';
+  btn.title = 'Play ' + line.label;
+  btn.onclick = () => playLine(line.audio, btn, div);
+
+  const label = document.createElement('span');
+  label.className = 'line-label';
+  label.textContent = line.label;
+  label.title = line.label;
+
+  div.appendChild(btn);
+
+  if (cls === 'alpha-line') {
+    const tag = document.createElement('span');
+    tag.className = 'line-char-tag';
+    tag.textContent = charName.split(' ')[0];
+    div.appendChild(tag);
+  }
+
+  div.appendChild(label);
+  return div;
+}
+
+function renderByCharacter(sorted) {
+  const cat = document.getElementById('catalogue');
+  cat.innerHTML = '';
+  sorted.forEach(char => {
+    const section = document.createElement('div');
+    section.className = 'char-section';
+
+    // Header
+    const header = document.createElement('div');
+    header.className = 'char-header';
+
+    const portrait = document.createElement('div');
+    portrait.className = 'char-portrait';
+    if (char.portrait) {
+      portrait.innerHTML = `<img src="${char.portrait}" alt="${char.character}">`;
+    } else {
+      portrait.textContent = char.emoji;
+    }
+
+    const info = document.createElement('div');
+    info.className = 'char-info';
+    info.innerHTML = `<div class="char-name">${char.character}</div><div class="char-meta">${char.game}</div>`;
+
+    const count = document.createElement('div');
+    count.className = 'char-count';
+    count.textContent = char.lines.length + ' lines';
+
+    header.appendChild(portrait);
+    header.appendChild(info);
+    header.appendChild(count);
+
+    // Grid
+    const grid = document.createElement('div');
+    grid.className = 'lines-grid';
+    char.lines.forEach(line => {
+      grid.appendChild(makeLineEl(line, char.character, 'voice-line'));
+    });
+
+    section.appendChild(header);
+    section.appendChild(grid);
+    cat.appendChild(section);
+  });
+}
+
+function renderAlpha() {
+  // Flatten all lines, sort by label alphabetically
+  const all = [];
+  data.forEach(char => {
+    char.lines.forEach(line => {
+      all.push({ ...line, character: char.character, game: char.game });
+    });
+  });
+  all.sort((a, b) => a.label.localeCompare(b.label));
+
+  // Group by first letter
+  const groups = {};
+  all.forEach(line => {
+    const letter = line.label[0].toUpperCase();
+    if (!groups[letter]) groups[letter] = [];
+    groups[letter].push(line);
+  });
+
+  const cat = document.getElementById('catalogue');
+  cat.innerHTML = '';
+  Object.keys(groups).sort().forEach(letter => {
+    const section = document.createElement('div');
+    section.className = 'alpha-section';
+
+    const divider = document.createElement('div');
+    divider.className = 'alpha-divider';
+    divider.textContent = '— ' + letter;
+
+    const grid = document.createElement('div');
+    grid.className = 'alpha-grid';
+    groups[letter].forEach(line => {
+      grid.appendChild(makeLineEl(line, line.character, 'alpha-line'));
+    });
+
+    section.appendChild(divider);
+    section.appendChild(grid);
+    cat.appendChild(section);
+  });
+}
+
+function renderByGame() {
+  const sorted = [...data].sort((a, b) => a.gameOrder - b.gameOrder || a.character.localeCompare(b.character));
+  // Group by game
+  const games = {};
+  sorted.forEach(char => {
+    if (!games[char.game]) games[char.game] = [];
+    games[char.game].push(char);
+  });
+
+  const cat = document.getElementById('catalogue');
+  cat.innerHTML = '';
+
+  Object.keys(games).forEach(game => {
+    const gameHeader = document.createElement('div');
+    gameHeader.style.cssText = `
+      font-family: 'Orbitron', monospace;
+      font-size: 0.85rem;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 10px 4px 6px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+      margin-top: 16px;
+    `;
+    gameHeader.textContent = '◆ ' + game;
+    cat.appendChild(gameHeader);
+
+    games[game].forEach(char => {
+      const section = document.createElement('div');
+      section.className = 'char-section';
+
+      const header = document.createElement('div');
+      header.className = 'char-header';
+
+      const portrait = document.createElement('div');
+      portrait.className = 'char-portrait';
+      if (char.portrait) {
+        portrait.innerHTML = `<img src="${char.portrait}" alt="${char.character}">`;
+      } else {
+        portrait.textContent = char.emoji;
+      }
+
+      const info = document.createElement('div');
+      info.className = 'char-info';
+      info.innerHTML = `<div class="char-name">${char.character}</div><div class="char-meta">${char.game}</div>`;
+
+      const count = document.createElement('div');
+      count.className = 'char-count';
+      count.textContent = char.lines.length + ' lines';
+
+      header.appendChild(portrait);
+      header.appendChild(info);
+      header.appendChild(count);
+
+      const grid = document.createElement('div');
+      grid.className = 'lines-grid';
+      char.lines.forEach(line => {
+        grid.appendChild(makeLineEl(line, char.character, 'voice-line'));
+      });
+
+      section.appendChild(header);
+      section.appendChild(grid);
+      cat.appendChild(section);
+    });
+  });
+}
+
+function render() {
+  stopCurrent();
+  if (currentSort === 'character') {
+    const sorted = [...data].sort((a, b) => a.character.localeCompare(b.character));
+    renderByCharacter(sorted);
+  } else if (currentSort === 'alpha') {
+    renderAlpha();
+  } else if (currentSort === 'game') {
+    renderByGame();
+  }
+}
+
+render();
+</script>
+</body>
+</html>
