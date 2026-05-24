@@ -314,11 +314,12 @@
 //  label:    display name for the line
 // ─────────────────────────────────────────────
 const data = [
+  // GMAE ONE
   {
     character: "Freddy Fazbear",
     game: "FNAF 1",
     gameOrder: 1,
-    portrait: "",      // e.g. "images/freddy.png"
+    portrait: "images/freddy.webp",      // e.g. "images/freddy.png"
     emoji: "🎩",
     lines: [
       { label: "Freddy 1", audio: "audio/freddy_1.mp3" },
@@ -333,7 +334,7 @@ const data = [
     character: "Chica",
     game: "FNAF 1",
     gameOrder: 1,
-    portrait: "",
+    portrait: "images/chica.webp",
     emoji: "🐦",
     lines: [
       { label: "Chica 1", audio: "audio/chica_1.mp3" },
@@ -346,12 +347,70 @@ const data = [
     character: "Bonnie",
     game: "FNAF 1",
     gameOrder: 1,
-    portrait: "",
+    portrait: "images/bonnie.webp",
     emoji: "🐰",
     lines: [
       { label: "Bonnie 1", audio: "audio/bonnie_1.mp3" },
       { label: "Bonnie 2", audio: "audio/bonnie_2.mp3" },
       { label: "Bonnie 3", audio: "audio/bonnie_3.mp3" },
+    ]
+  },
+  {
+    character: "Foxy",
+    game: "FNAF 1",
+    gameOrder: 1,
+    portrait: "images/foxy.webp",
+    emoji: "🦊",
+    lines: [
+      { label: "Foxy 1", audio: "audio/foxy_1.mp3" },
+    ]
+  },
+  {
+    character: "Phone Guy",
+    game: "FNAF 1",
+    gameOrder: 1,
+    portrait: "images/phone_guy.webp",
+    emoji: "📞",
+    lines: [
+      { label: "Phone Guy 1", audio: "audio/phone_guy_1.mp3" },
+    ]
+  },
+
+// GAME 2
+
+  {
+    character: "Toy Freddy",
+    game: "FNAF 2",
+    gameOrder: 2,
+    portrait: "",
+    emoji: "🐤",
+    lines: [
+      { label: "Toy Freddy 1", audio: "audio/toy_freddy_1.mp3" },
+      { label: "Toy Freddy 2", audio: "audio/toy_freddy_2.mp3" },
+    ]
+  },
+  {
+    character: "Toy Chica",
+    game: "FNAF 2",
+    gameOrder: 2,
+    portrait: "",
+    emoji: "🐤",
+    lines: [
+      { label: "Toy Chica 1", audio: "audio/toy_chica_1.mp3" },
+      { label: "Toy Chica 2", audio: "audio/toy_chica_2.mp3" },
+    ]
+  },
+  {
+    character: "Toy Bonnie",
+    game: "FNAF 2",
+    gameOrder: 2,
+    portrait: "",
+    emoji: "🐰",
+    lines: [
+      { label: "Toy Bonnie 1", audio: "audio/toy_bonnie_1.mp3" },
+      { label: "Toy Bonnie 2", audio: "audio/toy_bonnie_2.mp3" },
+      { label: "Toy Bonnie 3", audio: "audio/toy_bonnie_3.mp3" },
+      { label: "Toy Bonnie 4", audio: "audio/toy_bonnie_4.mp3" },
     ]
   },
   {
@@ -368,16 +427,123 @@ const data = [
     ]
   },
   {
-    character: "Toy Chica",
+    character: "Balloon Boy",
     game: "FNAF 2",
     gameOrder: 2,
     portrait: "",
-    emoji: "🐤",
+    emoji: "🎈",
     lines: [
-      { label: "Toy Chica 1", audio: "audio/toy_chica_1.mp3" },
-      { label: "Toy Chica 2", audio: "audio/toy_chica_2.mp3" },
+      { label: "Balloon Boy 1", audio: "audio/balloon_boy_1.mp3" },
+      { label: "Balloon Boy 2", audio: "audio/balloon_boy_2.mp3" },
+      { label: "Balloon Boy 3", audio: "audio/balloon_boy_3.mp3" },
+      { label: "Balloon Boy 4", audio: "audio/balloon_boy_4.mp3" },
     ]
   },
+
+
+  // GAME 3
+
+  {
+    character: "Springtrap",
+    game: "FNAF 3",
+    gameOrder: 3,
+    portrait: "",
+    emoji: "🦊",
+    lines: [
+      { label: "Springtrap 1", audio: "audio/springtrap_1.mp3" },
+      { label: "Springtrap 2", audio: "audio/springtrap_2.mp3" },
+      ]
+  },
+
+
+  // GAME 4
+
+  {
+    character: "idk",
+    game: "FNAF 4",
+    gameOrder: 4,
+    portrait: "",
+    emoji: "🦊",
+    lines: [
+      { label: "Springtrap 1", audio: "audio/springtrap_1.mp3" },
+      { label: "Springtrap 2", audio: "audio/springtrap_2.mp3" },
+      ]
+  },
+
+  // GAME SITER LCOATION
+
+  {
+    character: "Baby",
+    game: "Sister Location",
+    gameOrder: 5,
+    portrait: "",
+    emoji: "🦊",
+    lines: [
+      { label: "Baby 1", audio: "audio/baby_1.mp3" },
+      { label: "Baby 2", audio: "audio/baby_2.mp3" },
+      ]
+  },
+  {
+    character: "Ballora",
+    game: "Sister Location",
+    gameOrder: 5,
+    portrait: "",
+    emoji: "",
+    lines: [
+      { label: "Ballora 1", audio: "audio/ballora_1.mp3" },
+      { label: "Ballora 2", audio: "audio/ballora_2.mp3" },
+      ]
+  },
+  {
+    character: "Funtime Freddy",
+    game: "Sister Location",
+    gameOrder: 5,
+    portrait: "",
+    emoji: "",
+    lines: [
+      { label: "Ballora 1", audio: "audio/ballora_1.mp3" },
+      { label: "Ballora 2", audio: "audio/ballora_2.mp3" },
+      ]
+  },
+  {
+    character: "Bon Bon",
+    game: "Sister Location",
+    gameOrder: 5,
+    portrait: "",
+    emoji: "",
+    lines: [
+      { label: "Bon Bon 1", audio: "audio/bon_bon_1.mp3" },
+      { label: "Bon Bon 2", audio: "audio/bon_bon_2.mp3" },
+      ]
+  },
+  {
+    character: "Funtime Foxy",
+    game: "Sister Location",
+    gameOrder: 5,
+    portrait: "",
+    emoji: "",
+    lines: [
+      { label: "Funtime Foxy 1", audio: "audio/funtime_foxy_1.mp3" },
+      { label: "Funtime Foxy 2", audio: "audio/funtime_foxy_2.mp3" },
+      ]
+  },
+  {
+    character: "Ennard",
+    game: "Sister Location",
+    gameOrder: 5,
+    portrait: "",
+    emoji: "",
+    lines: [
+      { label: "Ennard 1", audio: "audio/ennard_1.mp3" },
+      { label: "Ennard 2", audio: "audio/ennard_2.mp3" },
+      ]
+  },
+
+  // im not doing pizzeria simulator unless i get money bro im sorry i know its the worst one
+
+  // GAME IDK PIZZAERIA SIM
+
+  // UCNNNNN
 ];
 
 // ─────────────────────────────────────────────
