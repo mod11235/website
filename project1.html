@@ -110,7 +110,7 @@
       margin: 0 auto;
     }
 
-    /* Character card */
+    // Character card
     .char-section {
       margin-bottom: 40px;
     }
@@ -175,7 +175,8 @@
       padding: 4px 12px;
     }
 
-    /* Lines grid */
+    /* Lines */
+
     .lines-grid {
       background: var(--card);
       border: 1px solid var(--border);
@@ -187,7 +188,7 @@
       gap: 10px;
     }
 
-    /* Individual voice line */
+    /* voice */
     .voice-line {
       background: var(--line-bg);
       border: 1px solid var(--line-border);
@@ -239,7 +240,7 @@
       flex: 1;
     }
 
-    /* Alphabetical view — flat list with letter dividers */
+    /* Alphabetical */
     .alpha-section { margin-bottom: 32px; }
 
     .alpha-divider {
@@ -299,9 +300,10 @@
 </header>
 
 <div class="controls">
+  <button class="sort-btn" onclick="setSort('game')" id="btn-game">By Game</button>
   <button class="sort-btn active" onclick="setSort('character')" id="btn-character">By Character</button>
   <button class="sort-btn" onclick="setSort('alpha')" id="btn-alpha">Alphabetical</button>
-  <button class="sort-btn" onclick="setSort('game')" id="btn-game">By Game</button>
+ 
 </div>
 
 <div class="catalogue" id="catalogue"></div>
@@ -309,7 +311,6 @@
 <script>
 // ─────────────────────────────────────────────
 //  DATA — add your characters and lines here
-//  portrait: path to your PNG, e.g. "images/chica.png"
 //  audio:    path to your audio file, e.g. "audio/chica_1.mp3"
 //  label:    display name for the line
 // ─────────────────────────────────────────────
