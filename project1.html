@@ -68,7 +68,6 @@
       text-transform: uppercase;
     }
 
-    /* Sort controls */
     .controls {
       display: flex;
       justify-content: center;
@@ -103,14 +102,12 @@
       box-shadow: 0 0 12px #84259322;
     }
 
-    /* Grid */
     .catalogue {
       padding: 16px 24px 60px;
       max-width: 1400px;
       margin: 0 auto;
     }
 
-    // Character card
     .char-section {
       margin-bottom: 40px;
     }
@@ -175,8 +172,6 @@
       padding: 4px 12px;
     }
 
-    /* Lines */
-
     .lines-grid {
       background: var(--card);
       border: 1px solid var(--border);
@@ -188,7 +183,6 @@
       gap: 10px;
     }
 
-    /* voice */
     .voice-line {
       background: var(--line-bg);
       border: 1px solid var(--line-border);
@@ -240,7 +234,6 @@
       flex: 1;
     }
 
-    /* Alphabetical */
     .alpha-section { margin-bottom: 32px; }
 
     .alpha-divider {
@@ -377,13 +370,15 @@ const data = [
     ]
   },
 
+
 // GAME 2
+
 
   {
     character: "Toy Freddy",
     game: "FNAF 2",
     gameOrder: 2,
-    portrait: "",
+    portrait: "images/toy_freddy.webp",
     emoji: "🐤",
     lines: [
       { label: "Toy Freddy 1", audio: "audio/toy_freddy_1.mp3" },
@@ -394,7 +389,7 @@ const data = [
     character: "Toy Chica",
     game: "FNAF 2",
     gameOrder: 2,
-    portrait: "",
+    portrait: "images/toy_chica.webp",
     emoji: "🐤",
     lines: [
       { label: "Toy Chica 1", audio: "audio/toy_chica_1.mp3" },
@@ -418,7 +413,7 @@ const data = [
     character: "Toy Foxy",
     game: "FNAF 2",
     gameOrder: 2,
-    portrait: "",
+    portrait: "images/toy_foxy.webp",
     emoji: "🦊",
     lines: [
       { label: "Toy Foxy 1", audio: "audio/toy_foxy_1.mp3" },
@@ -431,7 +426,7 @@ const data = [
     character: "Balloon Boy",
     game: "FNAF 2",
     gameOrder: 2,
-    portrait: "",
+    portrait: "images/balloon_boy.webp",
     emoji: "🎈",
     lines: [
       { label: "Balloon Boy 1", audio: "audio/balloon_boy_1.mp3" },
@@ -440,15 +435,27 @@ const data = [
       { label: "Balloon Boy 4", audio: "audio/balloon_boy_4.mp3" },
     ]
   },
+  {
+    character: "The Puppet",
+    game: "FNAF 2",
+    gameOrder: 2,
+    portrait: "images/puppet.webp",
+    emoji: "🐤",
+    lines: [
+      { label: "The Puppet 1", audio: "audio/puppet_1.mp3" },
+      { label: "The Puppet 2", audio: "audio/puppet_2.mp3" },
+    ]
+  },
 
 
   // GAME 3
+
 
   {
     character: "Springtrap",
     game: "FNAF 3",
     gameOrder: 3,
-    portrait: "",
+    portrait: "images/springtrap.webp",
     emoji: "🦊",
     lines: [
       { label: "Springtrap 1", audio: "audio/springtrap_1.mp3" },
@@ -458,6 +465,7 @@ const data = [
 
 
   // GAME 4
+
 
   {
     character: "idk",
@@ -471,14 +479,16 @@ const data = [
       ]
   },
 
+
   // GAME SITER LCOATION
+
 
   {
     character: "Baby",
     game: "Sister Location",
     gameOrder: 5,
-    portrait: "",
-    emoji: "🦊",
+    portrait: "images/baby.webp",
+    emoji: "🤡",
     lines: [
       { label: "Baby 1", audio: "audio/baby_1.mp3" },
       { label: "Baby 2", audio: "audio/baby_2.mp3" },
@@ -488,8 +498,8 @@ const data = [
     character: "Ballora",
     game: "Sister Location",
     gameOrder: 5,
-    portrait: "",
-    emoji: "",
+    portrait: "images/ballora.webp",
+    emoji: "🩰",
     lines: [
       { label: "Ballora 1", audio: "audio/ballora_1.mp3" },
       { label: "Ballora 2", audio: "audio/ballora_2.mp3" },
@@ -499,8 +509,8 @@ const data = [
     character: "Funtime Freddy",
     game: "Sister Location",
     gameOrder: 5,
-    portrait: "",
-    emoji: "",
+    portrait: "images/funtime_freddy.webp",
+    emoji: "🐻‍❄️",
     lines: [
       { label: "Ballora 1", audio: "audio/ballora_1.mp3" },
       { label: "Ballora 2", audio: "audio/ballora_2.mp3" },
@@ -510,7 +520,7 @@ const data = [
     character: "Bon Bon",
     game: "Sister Location",
     gameOrder: 5,
-    portrait: "",
+    portrait: "images/bon_bon.webp",
     emoji: "",
     lines: [
       { label: "Bon Bon 1", audio: "audio/bon_bon_1.mp3" },
@@ -521,7 +531,7 @@ const data = [
     character: "Funtime Foxy",
     game: "Sister Location",
     gameOrder: 5,
-    portrait: "",
+    portrait: "images/funtime_foxy.webp",
     emoji: "",
     lines: [
       { label: "Funtime Foxy 1", audio: "audio/funtime_foxy_1.mp3" },
@@ -532,7 +542,7 @@ const data = [
     character: "Ennard",
     game: "Sister Location",
     gameOrder: 5,
-    portrait: "",
+    portrait: "images/ennard.webp",
     emoji: "",
     lines: [
       { label: "Ennard 1", audio: "audio/ennard_1.mp3" },
@@ -545,6 +555,23 @@ const data = [
   // GAME IDK PIZZAERIA SIM
 
   // UCNNNNN
+
+  //freddy, bonnie, chica
+  //foxy, toy freddy, toy bonnie, toy chica, mangle
+  //bb, jj, withered chica, bonnie, puppet, golden
+  //springtrap, phantom mangle, freddy, bb
+  //nightmare, nightmare freddy, bonnie, fredbear,
+  //jack o chica, nightmare mangle, marionette, 
+  //nightmare bb, old man, baby, ballora, 
+  //funtime foxy, ennard, trash
+  // happy frog, hippo, pig patch, nedbear
+  //orville elephant, rockstar freddy, bonnie, chica
+  //rockstar foxy, music man!
+  //el chip, rockstar chica, molten freddy
+  //scrap baby, scraptrap , lefty, phone guy mannnn
+
+
+
 ];
 
 // ─────────────────────────────────────────────
@@ -624,7 +651,6 @@ function renderByCharacter(sorted) {
     const section = document.createElement('div');
     section.className = 'char-section';
 
-    // Header
     const header = document.createElement('div');
     header.className = 'char-header';
 
@@ -648,7 +674,6 @@ function renderByCharacter(sorted) {
     header.appendChild(info);
     header.appendChild(count);
 
-    // Grid
     const grid = document.createElement('div');
     grid.className = 'lines-grid';
     char.lines.forEach(line => {
@@ -662,7 +687,6 @@ function renderByCharacter(sorted) {
 }
 
 function renderAlpha() {
-  // Flatten all lines, sort by label alphabetically
   const all = [];
   data.forEach(char => {
     char.lines.forEach(line => {
@@ -671,7 +695,6 @@ function renderAlpha() {
   });
   all.sort((a, b) => a.label.localeCompare(b.label));
 
-  // Group by first letter
   const groups = {};
   all.forEach(line => {
     const letter = line.label[0].toUpperCase();
@@ -703,7 +726,6 @@ function renderAlpha() {
 
 function renderByGame() {
   const sorted = [...data].sort((a, b) => a.gameOrder - b.gameOrder || a.character.localeCompare(b.character));
-  // Group by game
   const games = {};
   sorted.forEach(char => {
     if (!games[char.game]) games[char.game] = [];
