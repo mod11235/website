@@ -130,7 +130,6 @@
       object-fit: cover;
       border: 1px solid var(--border);
       background: var(--surface);
-      /* placeholder style if no image */
       display: flex;
       align-items: center;
       justify-content: center;
@@ -293,8 +292,8 @@
 </header>
 
 <div class="controls">
-  <button class="sort-btn" onclick="setSort('game')" id="btn-game">By Game</button>
-  <button class="sort-btn active" onclick="setSort('character')" id="btn-character">By Character</button>
+  <button class="sort-btn active" onclick="setSort('game')" id="btn-game">By Game</button>
+  <button class="sort-btn" onclick="setSort('character')" id="btn-character">By Character</button>
   <button class="sort-btn" onclick="setSort('alpha')" id="btn-alpha">Alphabetical</button>
  
 </div>
@@ -554,7 +553,7 @@ const data = [
       ]
   },
 
-  // im not doing pizzeria simulator unless i get money bro im sorry i know its the worst one
+  // im not doing fnaf world unless i get money bro im sorry i know its the worst one
 
   // GAME IDK PIZZAERIA SIM
 
@@ -1030,6 +1029,24 @@ function makeLineEl(line, charName, cls = 'voice-line') {
   }
 
   div.appendChild(label);
+  
+  const dlBtn = document.createElement('a');
+  dlBtn.href = line.audio;
+  dlBtn.download = '';
+  dlBtn.title = 'Download ' + line.label;
+  dlBtn.style.cssText = `
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    transition: color 0.15s;
+    margin-left: auto;
+  `;
+  dlBtn.innerHTML = '⬇';
+  dlBtn.onmouseenter = () => dlBtn.style.color = 'var(--accent)';
+  dlBtn.onmouseleave = () => dlBtn.style.color = 'var(--muted)';
+  div.appendChild(dlBtn);
+
   return div;
 }
 
@@ -1128,7 +1145,7 @@ function renderByGame() {
     const gameHeader = document.createElement('div');
     gameHeader.style.cssText = `
       font-family: 'Orbitron', monospace;
-      font-size: 0.85rem;
+      font-size: 1.2rem;
       color: var(--accent);
       letter-spacing: 0.2em;
       text-transform: uppercase;
