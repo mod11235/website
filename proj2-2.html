@@ -30,7 +30,6 @@
       transition: background 0.8s ease;
     }
 
-    /* ── THEME SWATCHES ── */
     #theme-swatches {
       position: fixed;
       top: 50%;
@@ -63,7 +62,8 @@
     }
     .swatch.active::after { border-color: rgba(255,255,255,0.4); }
 
-    /* ── MAIN LAYOUT ── */
+
+
     #scene {
       width: 100vw;
       height: 100vh;
@@ -73,92 +73,27 @@
       justify-content: center;
     }
 
-    /* ── CONNECT TRIGGER BUTTON (below swatches) ── */
-    #connect-trigger {
-      position: fixed;
-      top: 50%;
-      left: 20px;
-      transform: translateY(calc(-50% + 90px));
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      border: 2px solid rgba(255,255,255,0.25);
-      background: rgba(255,255,255,0.06);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-      transition: border-color 0.2s, transform 0.2s, background 0.2s;
-      margin-top: 10px;
-    }
 
-    #connect-trigger:hover {
-      border-color: white;
-      background: rgba(255,255,255,0.12);
-      transform: translateY(calc(-50% + 90px)) scale(1.12);
-    }
 
-    #connect-trigger svg { display: block; }
-
-    /* ── CONNECT MODAL OVERLAY ── */
-    #connect-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 200;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      padding-left: 64px;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.25s ease;
-    }
-
-    #connect-overlay.open {
-      pointer-events: all;
-      opacity: 1;
-    }
-
-    #connect-backdrop {
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.35);
-    }
-
-    #connect-modal {
-      position: relative;
-      z-index: 1;
-      background: rgba(20,20,30,0.92);
-      backdrop-filter: blur(12px);
-      border: 1.5px solid rgba(255,255,255,0.12);
-      border-radius: 12px;
-      padding: 28px 24px 24px;
-      width: 220px;
+    #connect-screen {
       display: flex;
       flex-direction: column;
-      gap: 14px;
-      transform: translateX(-8px);
-      transition: transform 0.25s ease;
+      align-items: center;
+      gap: 24px;
+      text-align: center;
     }
 
-    #connect-overlay.open #connect-modal {
-      transform: translateX(0);
-    }
-
-    #connect-modal h2 {
+    #connect-screen h1 {
       font-family: var(--font-display);
-      font-size: 1.6rem;
+      font-size: 3.5rem;
       font-weight: 600;
-      line-height: 1;
-      color: var(--theme-text);
+      letter-spacing: -1px;
     }
 
-    #connect-modal p {
-      font-size: 0.6rem;
+    #connect-screen p {
+      font-size: 0.75rem;
       color: var(--theme-muted);
-      letter-spacing: 0.06em;
-      line-height: 1.6;
+      letter-spacing: 0.05em;
     }
 
     #connect-btn {
@@ -166,14 +101,13 @@
       border: 1.5px solid var(--theme-border);
       color: var(--theme-text);
       font-family: var(--font-mono);
-      font-size: 0.65rem;
+      font-size: 0.75rem;
       letter-spacing: 0.1em;
-      padding: 10px 16px;
+      padding: 12px 28px;
       border-radius: 4px;
       cursor: pointer;
       text-transform: uppercase;
       transition: background 0.2s, border-color 0.2s;
-      width: 100%;
     }
 
     #connect-btn:hover {
@@ -181,27 +115,9 @@
       border-color: rgba(255,255,255,0.4);
     }
 
-    #connect-close {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: none;
-      border: none;
-      color: var(--theme-muted);
-      cursor: pointer;
-      font-size: 16px;
-      line-height: 1;
-      padding: 2px 6px;
-      border-radius: 4px;
-      transition: color 0.15s;
-    }
 
-    #connect-close:hover { color: var(--theme-text); }
 
-    /* ── CONNECT SCREEN (hidden, kept for fallback) ── */
-    #connect-screen { display: none; }
 
-    /* ── PLAYER VIEWS ── */
     .player-view {
       display: none;
       width: 100%;
@@ -223,7 +139,8 @@
       opacity: 0;
     }
 
-    /* ── TRACK INFO SHARED ── */
+
+
     .track-info {
       text-align: center;
     }
@@ -243,7 +160,8 @@
       text-transform: uppercase;
     }
 
-    /* ── PROGRESS BAR ── */
+
+
     .progress-wrap {
       width: 100%;
       margin: 16px 0 8px;
@@ -274,7 +192,8 @@
       letter-spacing: 0.05em;
     }
 
-    /* ── CONTROLS ── */
+
+
     .controls {
       display: flex;
       align-items: center;
@@ -317,7 +236,7 @@
       margin: 0 auto 20px;
     }
 
-    /* turntable base */
+
     .turntable-base {
       position: absolute;
       bottom: 0;
@@ -342,7 +261,7 @@
       border: 3px solid #333;
     }
 
-    /* vinyl record */
+
     .vinyl {
       position: absolute;
       bottom: 38px;
@@ -403,7 +322,7 @@
       z-index: 2;
     }
 
-    /* tonearm */
+
     .tonearm {
       position: absolute;
       top: 10px;
@@ -587,7 +506,6 @@
 
     .bb-dot.red { background: var(--theme-accent); }
 
-    /* antenna */
     .bb-antenna {
       position: absolute;
       top: -50px;
@@ -599,7 +517,6 @@
       transform-origin: bottom center;
     }
 
-    /* handle */
     .bb-handle {
       position: absolute;
       top: -20px;
@@ -902,7 +819,8 @@
     #view-ipod .track-info { width: 240px; text-align: left; }
     #view-ipod .track-title { font-size: 1.8rem; }
 
-    /* ── LOADING ── */
+
+
     #loading {
       position: fixed;
       inset: 0;
@@ -933,7 +851,8 @@
       50%      { opacity: 1;   transform: scale(1); }
     }
 
-    /* ── NOT PLAYING ── */
+
+
     #not-playing {
       position: absolute;
       bottom: 20px;
@@ -954,7 +873,7 @@
   <div class="loading-dot"></div>
 </div>
 
-<!-- THEME SWATCHES -->
+
 <div id="theme-swatches" aria-label="Theme selector">
   <div class="swatch active" data-theme="midnight"  style="background:#1a1a2e" title="Midnight"></div>
   <div class="swatch"        data-theme="garage"    style="background:#1c1c1c" title="Garage"></div>
@@ -962,31 +881,17 @@
   <div class="swatch"        data-theme="pastel"    style="background:#e8e0f0" title="Pastel"></div>
 </div>
 
-<!-- CONNECT TRIGGER -->
-<button id="connect-trigger" onclick="openConnectModal()" aria-label="Connect Spotify" title="Connect Spotify">
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
-  </svg>
-</button>
 
-<!-- CONNECT MODAL OVERLAY -->
-<div id="connect-overlay" role="dialog" aria-modal="true" aria-label="Connect Spotify">
-  <div id="connect-backdrop" onclick="closeConnectModal()"></div>
-  <div id="connect-modal">
-    <button id="connect-close" onclick="closeConnectModal()" aria-label="Close">x</button>
-    <h2>now playing</h2>
-    <p>connect your spotify account to display what you're listening to</p>
-    <button id="connect-btn" onclick="connectSpotify()">connect spotify</button>
-  </div>
-</div>
-
-<!-- SCENE -->
 <div id="scene">
 
-  <!-- CONNECT (hidden fallback) -->
-  <div id="connect-screen"></div>
 
-  <!-- VIEW 1: RECORD PLAYER -->
+  <div id="connect-screen">
+    <h1>now playing</h1>
+    <p>connect your spotify to get started</p>
+    <button id="connect-btn" onclick="connectSpotify()">connect spotify</button>
+  </div>
+
+  <!-- rec -->
   <div id="view-record" class="player-view">
     <div style="display:flex;flex-direction:column;align-items:center;">
       <div class="record-scene">
@@ -1030,7 +935,7 @@
     </div>
   </div>
 
-  <!-- VIEW 2: BOOMBOX GARAGE -->
+  <!-- boom -->
   <div id="view-boombox" class="player-view">
     <div class="garage-scene">
       <div class="garage-floor"></div>
@@ -1080,7 +985,7 @@
     </div>
   </div>
 
-  <!-- VIEW 3: CASSETTE PLAYER -->
+  <!-- cassette -->
   <div id="view-cassette" class="player-view">
     <div class="cassette-player">
       <div class="cp-body"></div>
@@ -1128,7 +1033,7 @@
     </div>
   </div>
 
-  <!-- VIEW 4: IPOD TOUCH -->
+  <!-- ipod -->
   <div id="view-ipod" class="player-view">
     <div class="ipod-device">
       <div class="ipod-side-btn left"></div>
@@ -1186,7 +1091,6 @@
 </div>
 
 <script>
-// ── THEMES ──
 const THEMES = {
   midnight: { bg:'#1a1a2e', accent:'#e94560', text:'#eaeaea' },
   garage:   { bg:'#1c1c1c', accent:'#f5a623', text:'#e8e8e8' },
@@ -1194,13 +1098,12 @@ const THEMES = {
   pastel:   { bg:'#e8e0f0', accent:'#9b59b6', text:'#2c2c2c' },
 };
 
-// VIEW ORDER — matches swatch order
+
 const VIEW_NAMES = ['view-record','view-boombox','view-cassette','view-ipod'];
 let currentView = 0;
 
 document.querySelectorAll('.swatch').forEach((sw, i) => {
   sw.addEventListener('click', () => {
-    // update theme
     const t = THEMES[sw.dataset.theme];
     document.documentElement.style.setProperty('--theme-bg',     t.bg);
     document.documentElement.style.setProperty('--theme-accent', t.accent);
@@ -1208,7 +1111,6 @@ document.querySelectorAll('.swatch').forEach((sw, i) => {
     document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
     sw.classList.add('active');
 
-    // switch view with fade
     switchView(i);
   });
 });
@@ -1226,7 +1128,7 @@ function switchView(idx) {
   }, 400);
 }
 
-// ── AUTH ──
+
 let accessToken = null;
 let refreshToken = null;
 let tokenExpiry = 0;
@@ -1236,16 +1138,8 @@ let progressInterval = null;
 let currentProgress = 0;
 let currentDuration = 0;
 
-function openConnectModal() {
-  document.getElementById('connect-overlay').classList.add('open');
-}
-
-function closeConnectModal() {
-  document.getElementById('connect-overlay').classList.remove('open');
-}
-
 function connectSpotify() {
-  const clientId = '__SPOTIFY_CLIENT_ID__'; // replaced at build or set in env
+  const clientId = '811ba7124cc64204a69dd9000213a775';
   const redirectUri = encodeURIComponent(window.location.origin + '/callback');
   const scopes = encodeURIComponent([
     'user-read-currently-playing',
@@ -1261,7 +1155,7 @@ async function handleCallback() {
   const code = params.get('code');
   if (!code) return false;
 
-  // clean URL
+
   window.history.replaceState({}, '', '/');
 
   try {
@@ -1304,7 +1198,7 @@ async function ensureToken() {
   return true;
 }
 
-// ── PLAYER ──
+
 async function fetchNowPlaying() {
   if (!await ensureToken()) return;
   try {
@@ -1473,11 +1367,10 @@ async function prevTrack() {
   setTimeout(fetchNowPlaying, 500);
 }
 
-// ── INIT ──
 async function init() {
   const loading = document.getElementById('loading');
 
-  // check for OAuth callback
+
   if (window.location.search.includes('code=')) {
     const ok = await handleCallback();
     if (ok) {
@@ -1485,7 +1378,6 @@ async function init() {
       pollInterval = setInterval(fetchNowPlaying, 10000);
     }
   } else {
-    // try silent refresh
     const ok = await tryRefresh();
     if (ok) {
       document.getElementById('connect-screen').style.display = 'none';
@@ -1497,10 +1389,6 @@ async function init() {
 
   loading.classList.add('hidden');
 }
-
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeConnectModal();
-});
 
 init();
 </script>
