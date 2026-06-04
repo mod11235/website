@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>now playing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --theme-bg: #1a1a2e;
+      --theme-accent: #e94560;
+      --theme-text: #eaeaea;
+      --theme-muted: #888;
+      --theme-surface: rgba(255,255,255,0.06);
+      --theme-border: rgba(255,255,255,0.15);
+      --font-display: 'Caveat', cursive;
+      --font-mono: 'Space Mono', monospace;
+    }
+
+    body {
+      font-family: var(--font-mono);
+      background: var(--theme-bg);
+      color: var(--theme-text);
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      transition: background 0.8s ease;
+    }
+
+    /* ── THEME SWATCHES ── */
+    #theme-swatches {
+      position: fixed;
+      top: 50%;
+      left: 20px;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 100;
+    }
+
+    .swatch {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      border: 2px solid rgba(255,255,255,0.25);
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s;
+      position: relative;
+    }
+
+    .swatch:hover { transform: scale(1.15); border-color: white; }
+    .swatch.active { border-color: white; transform: scale(1.1); }
+    .swatch::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 8px;
+      border: 1.5px solid transparent;
+    }
+    .swatch.active::after { border-color: rgba(255,255,255,0.4); }
+
+    /* ── MAIN LAYOUT ── */
+    #scene {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ── CONNECT SCREEN ── */
+    #connect-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      text-align: center;
+    }
+
+    #connect-screen h1 {
+      font-family: var(--font-display);
+      font-size: 3.5rem;
+      font-weight: 600;
+      letter-spacing: -1px;
+    }
+
+    #connect-screen p {
+      font-size: 0.75rem;
+      color: var(--theme-muted);
+      letter-spacing: 0.05em;
+    }
+
+    #connect-btn {
+      background: none;
+      border: 1.5px solid var(--theme-border);
+      color: var(--theme-text);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      padding: 12px 28px;
+      border-radius: 4px;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    #connect-btn:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.4);
+    }
+
+    /* ── PLAYER VIEWS ── */
+    .player-view {
+      display: none;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      inset: 0;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .player-view.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .player-view.fading-out {
+      opacity: 0;
+    }
+
+    /* ── TRACK INFO SHARED ── */
+    .track-info {
+      text-align: center;
+    }
+
+    .track-title {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      font-weight: 600;
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+
+    .track-artist {
+      font-size: 0.7rem;
+      color: var(--theme-muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    /* ── PROGRESS BAR ── */
+    .progress-wrap {
+      width: 100%;
+      margin: 16px 0 8px;
+    }
+
+    .progress-bar-bg {
+      height: 3px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--theme-text);
+      border-radius: 2px;
+      width: 0%;
+      transition: width 1s linear;
+    }
+
+    .progress-times {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.6rem;
+      color: var(--theme-muted);
+      margin-top: 5px;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── CONTROLS ── */
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 10px;
+    }
+
+    .ctrl-btn {
+      background: none;
+      border: none;
+      color: var(--theme-text);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 50%;
+      transition: opacity 0.2s, transform 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.7;
+    }
+
+    .ctrl-btn:hover { opacity: 1; transform: scale(1.1); }
+    .ctrl-btn.play-pause { opacity: 1; }
+
+    .ctrl-btn svg { display: block; }
+
+    /* ══════════════════════════════
+       VIEW 1 — RECORD PLAYER
+    ══════════════════════════════ */
+    #view-record {
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .record-scene {
+      position: relative;
+      width: 320px;
+      height: 280px;
+      margin: 0 auto 20px;
+    }
+
+    /* turntable base */
+    .turntable-base {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 280px;
+      height: 60px;
+      background: #2a1a0a;
+      border-radius: 8px 8px 4px 4px;
+      border: 1px solid #4a2e10;
+    }
+
+    .turntable-platter {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: #1a1a1a;
+      border: 3px solid #333;
+    }
+
+    /* vinyl record */
+    .vinyl {
+      position: absolute;
+      bottom: 38px;
+      left: 50%;
+      transform: translateX(-50%) rotate(0deg);
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: repeating-radial-gradient(
+        circle at 50%,
+        #111 0px,
+        #1a1a1a 2px,
+        #111 4px
+      );
+      border: 2px solid #222;
+    }
+
+    .vinyl.spinning {
+      animation: spin 3s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: translateX(-50%) rotate(0deg); }
+      to   { transform: translateX(-50%) rotate(360deg); }
+    }
+
+    .vinyl-label {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: var(--theme-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .vinyl-label img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .vinyl-hole {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #111;
+      z-index: 2;
+    }
+
+    /* tonearm */
+    .tonearm {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      width: 6px;
+      height: 130px;
+      background: #888;
+      border-radius: 3px;
+      transform-origin: top center;
+      transform: rotate(-20deg);
+      transition: transform 0.8s ease;
+    }
+
+    .tonearm.on-record {
+      transform: rotate(5deg);
+    }
+
+    .tonearm-head {
+      position: absolute;
+      bottom: -6px;
+      left: -4px;
+      width: 14px;
+      height: 8px;
+      background: #666;
+      border-radius: 2px;
+    }
+
+    .tonearm-pivot {
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #aaa;
+      border: 2px solid #777;
+    }
+
+    #view-record .track-info {
+      width: 300px;
+    }
+
+    /* ══════════════════════════════
+       VIEW 2 — BOOMBOX GARAGE
+    ══════════════════════════════ */
+    #view-boombox {
+      flex-direction: column;
+    }
+
+    .garage-scene {
+      position: relative;
+      width: 340px;
+      height: 260px;
+      margin: 0 auto 16px;
+    }
+
+    /* garage bg hint */
+    .garage-floor {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 50px;
+      background: rgba(255,255,255,0.03);
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .garage-wall-line {
+      position: absolute;
+      bottom: 50px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: rgba(255,255,255,0.05);
+    }
+
+    /* boombox body */
+    .boombox {
+      position: absolute;
+      bottom: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 280px;
+      height: 140px;
+    }
+
+    .boombox.shaking {
+      animation: shake 0.4s ease-in-out infinite;
+    }
+
+    @keyframes shake {
+      0%,100% { transform: translateX(-50%) rotate(0deg); }
+      25%      { transform: translateX(-50%) rotate(-0.8deg) translateY(-1px); }
+      75%      { transform: translateX(-50%) rotate(0.8deg) translateY(1px); }
+    }
+
+    .bb-body {
+      position: absolute;
+      inset: 0;
+      background: #2a2a2a;
+      border-radius: 12px;
+      border: 2px solid #444;
+    }
+
+    .bb-speaker {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 3px solid #555;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .bb-speaker.left { left: 16px; }
+    .bb-speaker.right { right: 16px; }
+
+    .bb-speaker-inner {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 2px solid #444;
+      background: repeating-radial-gradient(
+        circle,
+        #1a1a1a 0px,
+        #222 3px,
+        #1a1a1a 6px
+      );
+    }
+
+    .bb-center {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px;
+      text-align: center;
+    }
+
+    .bb-cassette-window {
+      width: 70px;
+      height: 40px;
+      background: #111;
+      border-radius: 4px;
+      border: 1.5px solid #555;
+      margin: 0 auto 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .bb-reel {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid #888;
+      margin: 0 4px;
+    }
+
+    .bb-reel.spinning {
+      animation: spin 1.5s linear infinite;
+    }
+
+    .bb-buttons {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+    }
+
+    .bb-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #555;
+    }
+
+    .bb-dot.red { background: var(--theme-accent); }
+
+    /* antenna */
+    .bb-antenna {
+      position: absolute;
+      top: -50px;
+      right: 30px;
+      width: 3px;
+      height: 50px;
+      background: #666;
+      border-radius: 2px;
+      transform-origin: bottom center;
+    }
+
+    /* handle */
+    .bb-handle {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 20px;
+      border: 3px solid #555;
+      border-bottom: none;
+      border-radius: 16px 16px 0 0;
+    }
+
+    #view-boombox .track-info { width: 300px; }
+
+    /* ══════════════════════════════
+       VIEW 3 — CASSETTE PLAYER
+    ══════════════════════════════ */
+    #view-cassette {
+      flex-direction: row;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .cassette-player {
+      position: relative;
+      width: 220px;
+      height: 320px;
+    }
+
+    .cp-body {
+      position: absolute;
+      inset: 0;
+      background: #1e1e1e;
+      border-radius: 16px;
+      border: 2px solid #3a3a3a;
+    }
+
+    .cp-screen {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      right: 20px;
+      height: 70px;
+      background: #0a120a;
+      border-radius: 8px;
+      border: 1.5px solid #2a2a2a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .cp-screen-text {
+      font-size: 0.55rem;
+      color: #4aff4a;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-align: center;
+      padding: 4px 8px;
+      line-height: 1.6;
+    }
+
+    .cp-window {
+      position: absolute;
+      top: 110px;
+      left: 20px;
+      right: 20px;
+      height: 80px;
+      background: #111;
+      border-radius: 8px;
+      border: 1.5px solid #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .cp-reel {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 2px solid #666;
+      position: relative;
+    }
+
+    .cp-reel.spinning {
+      animation: spin 2s linear infinite;
+    }
+
+    .cp-reel::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #333;
+      border: 1.5px solid #555;
+    }
+
+    .cp-tape-line {
+      height: 2px;
+      width: 20px;
+      background: #444;
+    }
+
+    .cp-controls {
+      position: absolute;
+      bottom: 30px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .cp-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #2a2a2a;
+      border: 1.5px solid #444;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .cp-btn:hover { background: #3a3a3a; }
+
+    .cp-eq {
+      position: absolute;
+      bottom: 78px;
+      left: 20px;
+      right: 20px;
+      height: 30px;
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      padding: 0 4px;
+    }
+
+    .eq-bar {
+      flex: 1;
+      background: var(--theme-accent);
+      border-radius: 2px 2px 0 0;
+      opacity: 0.6;
+      min-height: 4px;
+    }
+
+    .eq-bar.animated {
+      animation: eq-bounce var(--dur, 0.5s) ease-in-out infinite alternate;
+    }
+
+    @keyframes eq-bounce {
+      from { height: 4px; }
+      to   { height: var(--max, 20px); }
+    }
+
+    #view-cassette .track-info { width: 240px; text-align: left; }
+    #view-cassette .track-title { font-size: 1.8rem; }
+
+    /* ══════════════════════════════
+       VIEW 4 — IPOD TOUCH
+    ══════════════════════════════ */
+    #view-ipod {
+      flex-direction: row;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .ipod-device {
+      width: 200px;
+      height: 360px;
+      background: #f0f0f0;
+      border-radius: 28px;
+      border: 2px solid #ccc;
+      position: relative;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.8);
+      overflow: hidden;
+    }
+
+    /* dark mode ipod */
+    @media (prefers-color-scheme: light) {}
+
+    .ipod-screen {
+      position: absolute;
+      top: 20px;
+      left: 14px;
+      right: 14px;
+      height: 230px;
+      background: #0a0a0a;
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .ipod-album-art {
+      width: 120px;
+      height: 120px;
+      border-radius: 8px;
+      background: var(--theme-accent);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .ipod-album-art img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .ipod-track-name {
+      font-size: 0.6rem;
+      color: #eee;
+      letter-spacing: 0.05em;
+      text-align: center;
+      padding: 0 8px;
+      font-family: var(--font-mono);
+    }
+
+    .ipod-track-artist {
+      font-size: 0.5rem;
+      color: #888;
+      letter-spacing: 0.08em;
+      text-align: center;
+      font-family: var(--font-mono);
+    }
+
+    .ipod-progress {
+      width: 80%;
+      height: 2px;
+      background: #333;
+      border-radius: 1px;
+      overflow: hidden;
+    }
+
+    .ipod-progress-fill {
+      height: 100%;
+      background: #fff;
+      border-radius: 1px;
+      transition: width 1s linear;
+    }
+
+    .ipod-home-btn {
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid #aaa;
+      background: #e0e0e0;
+    }
+
+    .ipod-side-btn {
+      position: absolute;
+      top: 80px;
+      width: 4px;
+      height: 32px;
+      background: #bbb;
+      border-radius: 2px;
+    }
+
+    .ipod-side-btn.left { left: -2px; }
+    .ipod-side-btn.right { right: -2px; }
+
+    .ipod-btns {
+      position: absolute;
+      bottom: 68px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-around;
+    }
+
+    .ipod-ctrl {
+      background: none;
+      border: none;
+      color: #555;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 4px;
+      border-radius: 4px;
+      transition: color 0.15s;
+      display: flex;
+      align-items: center;
+    }
+
+    .ipod-ctrl:hover { color: #111; }
+
+    #view-ipod .track-info { width: 240px; text-align: left; }
+    #view-ipod .track-title { font-size: 1.8rem; }
+
+    /* ── LOADING ── */
+    #loading {
+      position: fixed;
+      inset: 0;
+      background: var(--theme-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      transition: opacity 0.5s;
+    }
+
+    #loading.hidden { opacity: 0; pointer-events: none; }
+
+    .loading-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--theme-text);
+      margin: 0 4px;
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+
+    .loading-dot:nth-child(2) { animation-delay: 0.2s; }
+    .loading-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes pulse {
+      0%,100% { opacity: 0.2; transform: scale(0.8); }
+      50%      { opacity: 1;   transform: scale(1); }
+    }
+
+    /* ── NOT PLAYING ── */
+    #not-playing {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.6rem;
+      color: var(--theme-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+<div id="loading">
+  <div class="loading-dot"></div>
+  <div class="loading-dot"></div>
+  <div class="loading-dot"></div>
+</div>
+
+<!-- THEME SWATCHES -->
+<div id="theme-swatches" aria-label="Theme selector">
+  <div class="swatch active" data-theme="midnight"  style="background:#1a1a2e" title="Midnight"></div>
+  <div class="swatch"        data-theme="garage"    style="background:#1c1c1c" title="Garage"></div>
+  <div class="swatch"        data-theme="lo-fi"     style="background:#2d2016" title="Lo-fi"></div>
+  <div class="swatch"        data-theme="pastel"    style="background:#e8e0f0" title="Pastel"></div>
+</div>
+
+<!-- SCENE -->
+<div id="scene">
+
+  <!-- CONNECT -->
+  <div id="connect-screen">
+    <h1>now playing</h1>
+    <p>connect your spotify to get started</p>
+    <button id="connect-btn" onclick="connectSpotify()">connect spotify</button>
+  </div>
+
+  <!-- VIEW 1: RECORD PLAYER -->
+  <div id="view-record" class="player-view">
+    <div style="display:flex;flex-direction:column;align-items:center;">
+      <div class="record-scene">
+        <div class="turntable-platter"></div>
+        <div class="vinyl" id="vinyl">
+          <div class="vinyl-label" id="vinyl-label">
+            <img id="album-art-1" src="" alt="album art" style="display:none"/>
+          </div>
+          <div class="vinyl-hole"></div>
+        </div>
+        <div class="turntable-base"></div>
+        <div class="tonearm" id="tonearm">
+          <div class="tonearm-pivot"></div>
+          <div class="tonearm-head"></div>
+        </div>
+      </div>
+      <div class="track-info">
+        <div class="track-title" id="title-1">nothing playing</div>
+        <div class="track-artist" id="artist-1">—</div>
+        <div class="progress-wrap">
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progress-1"></div>
+          </div>
+          <div class="progress-times">
+            <span id="time-current-1">0:00</span>
+            <span id="time-total-1">0:00</span>
+          </div>
+        </div>
+        <div class="controls">
+          <button class="ctrl-btn" onclick="prevTrack()" aria-label="Previous">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+          </button>
+          <button class="ctrl-btn play-pause" id="playpause-1" onclick="togglePlay()" aria-label="Play/Pause">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" id="playpause-icon-1"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+          <button class="ctrl-btn" onclick="nextTrack()" aria-label="Next">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 2: BOOMBOX GARAGE -->
+  <div id="view-boombox" class="player-view">
+    <div class="garage-scene">
+      <div class="garage-floor"></div>
+      <div class="garage-wall-line"></div>
+      <div class="boombox" id="boombox">
+        <div class="bb-body"></div>
+        <div class="bb-handle"></div>
+        <div class="bb-antenna"></div>
+        <div class="bb-speaker left"><div class="bb-speaker-inner"></div></div>
+        <div class="bb-speaker right"><div class="bb-speaker-inner"></div></div>
+        <div class="bb-center">
+          <div class="bb-cassette-window">
+            <div class="bb-reel" id="bb-reel-left"></div>
+            <div class="bb-reel" id="bb-reel-right"></div>
+          </div>
+          <div class="bb-buttons">
+            <div class="bb-dot red"></div>
+            <div class="bb-dot"></div>
+            <div class="bb-dot"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="track-info">
+      <div class="track-title" id="title-2">nothing playing</div>
+      <div class="track-artist" id="artist-2">—</div>
+      <div class="progress-wrap">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-2"></div>
+        </div>
+        <div class="progress-times">
+          <span id="time-current-2">0:00</span>
+          <span id="time-total-2">0:00</span>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="ctrl-btn" onclick="prevTrack()" aria-label="Previous">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+        </button>
+        <button class="ctrl-btn play-pause" id="playpause-2" onclick="togglePlay()" aria-label="Play/Pause">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" id="playpause-icon-2"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <button class="ctrl-btn" onclick="nextTrack()" aria-label="Next">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 3: CASSETTE PLAYER -->
+  <div id="view-cassette" class="player-view">
+    <div class="cassette-player">
+      <div class="cp-body"></div>
+      <div class="cp-screen">
+        <div class="cp-screen-text" id="cp-screen-text">— NO SIGNAL —</div>
+      </div>
+      <div class="cp-eq" id="cp-eq">
+        <div class="eq-bar" style="--dur:0.4s;--max:24px;height:8px"></div>
+        <div class="eq-bar" style="--dur:0.6s;--max:20px;height:4px"></div>
+        <div class="eq-bar" style="--dur:0.3s;--max:28px;height:14px"></div>
+        <div class="eq-bar" style="--dur:0.5s;--max:18px;height:6px"></div>
+        <div class="eq-bar" style="--dur:0.7s;--max:26px;height:10px"></div>
+        <div class="eq-bar" style="--dur:0.35s;--max:22px;height:16px"></div>
+        <div class="eq-bar" style="--dur:0.55s;--max:20px;height:8px"></div>
+      </div>
+      <div class="cp-window">
+        <div class="cp-reel" id="cp-reel-left"></div>
+        <div class="cp-tape-line"></div>
+        <div class="cp-reel" id="cp-reel-right"></div>
+      </div>
+      <div class="cp-controls">
+        <button class="cp-btn" onclick="prevTrack()" aria-label="Previous">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#aaa"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+        </button>
+        <button class="cp-btn" id="playpause-3" onclick="togglePlay()" aria-label="Play/Pause">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#aaa" id="playpause-icon-3"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <button class="cp-btn" onclick="nextTrack()" aria-label="Next">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#aaa"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="track-info">
+      <div class="track-title" id="title-3">nothing playing</div>
+      <div class="track-artist" id="artist-3">—</div>
+      <div class="progress-wrap">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-3"></div>
+        </div>
+        <div class="progress-times">
+          <span id="time-current-3">0:00</span>
+          <span id="time-total-3">0:00</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 4: IPOD TOUCH -->
+  <div id="view-ipod" class="player-view">
+    <div class="ipod-device">
+      <div class="ipod-side-btn left"></div>
+      <div class="ipod-side-btn right"></div>
+      <div class="ipod-screen">
+        <div class="ipod-album-art">
+          <img id="album-art-4" src="" alt="album art" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:8px"/>
+        </div>
+        <div class="ipod-track-name" id="title-4">nothing playing</div>
+        <div class="ipod-track-artist" id="artist-4">—</div>
+        <div class="ipod-progress">
+          <div class="ipod-progress-fill" id="progress-4"></div>
+        </div>
+      </div>
+      <div class="ipod-btns">
+        <button class="ipod-ctrl" onclick="prevTrack()" aria-label="Previous">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+        </button>
+        <button class="ipod-ctrl" id="playpause-4" onclick="togglePlay()" aria-label="Play/Pause">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" id="playpause-icon-4"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <button class="ipod-ctrl" onclick="nextTrack()" aria-label="Next">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+        </button>
+      </div>
+      <div class="ipod-home-btn"></div>
+    </div>
+    <div class="track-info">
+      <div class="track-title" id="title-4b">nothing playing</div>
+      <div class="track-artist" id="artist-4b">—</div>
+      <div class="progress-wrap" style="width:240px">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-4b"></div>
+        </div>
+        <div class="progress-times">
+          <span id="time-current-4">0:00</span>
+          <span id="time-total-4">0:00</span>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="ctrl-btn" onclick="prevTrack()" aria-label="Previous">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+        </button>
+        <button class="ctrl-btn play-pause" id="playpause-4b" onclick="togglePlay()" aria-label="Play/Pause">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" id="playpause-icon-4b"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <button class="ctrl-btn" onclick="nextTrack()" aria-label="Next">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="not-playing" style="display:none">nothing playing right now</div>
+</div>
+
+<script>
+// ── THEMES ──
+const THEMES = {
+  midnight: { bg:'#1a1a2e', accent:'#e94560', text:'#eaeaea' },
+  garage:   { bg:'#1c1c1c', accent:'#f5a623', text:'#e8e8e8' },
+  'lo-fi':  { bg:'#2d2016', accent:'#c8855a', text:'#f0e6d8' },
+  pastel:   { bg:'#e8e0f0', accent:'#9b59b6', text:'#2c2c2c' },
+};
+
+// VIEW ORDER — matches swatch order
+const VIEW_NAMES = ['view-record','view-boombox','view-cassette','view-ipod'];
+let currentView = 0;
+
+document.querySelectorAll('.swatch').forEach((sw, i) => {
+  sw.addEventListener('click', () => {
+    // update theme
+    const t = THEMES[sw.dataset.theme];
+    document.documentElement.style.setProperty('--theme-bg',     t.bg);
+    document.documentElement.style.setProperty('--theme-accent', t.accent);
+    document.documentElement.style.setProperty('--theme-text',   t.text);
+    document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+    sw.classList.add('active');
+
+    // switch view with fade
+    switchView(i);
+  });
+});
+
+function switchView(idx) {
+  if (idx === currentView) return;
+  const oldEl = document.getElementById(VIEW_NAMES[currentView]);
+  const newEl = document.getElementById(VIEW_NAMES[idx]);
+
+  oldEl.classList.add('fading-out');
+  setTimeout(() => {
+    oldEl.classList.remove('active','fading-out');
+    currentView = idx;
+    newEl.classList.add('active');
+  }, 400);
+}
+
+// ── AUTH ──
+let accessToken = null;
+let refreshToken = null;
+let tokenExpiry = 0;
+let isPlaying = false;
+let pollInterval = null;
+let progressInterval = null;
+let currentProgress = 0;
+let currentDuration = 0;
+
+function connectSpotify() {
+  const clientId = '__SPOTIFY_CLIENT_ID__'; // replaced at build or set in env
+  const redirectUri = encodeURIComponent(window.location.origin + '/callback');
+  const scopes = encodeURIComponent([
+    'user-read-currently-playing',
+    'user-read-playback-state',
+    'user-modify-playback-state'
+  ].join(' '));
+  window.location.href =
+    `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientId}&scope=${scopes}&redirect_uri=${redirectUri}`;
+}
+
+async function handleCallback() {
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('code');
+  if (!code) return false;
+
+  // clean URL
+  window.history.replaceState({}, '', '/');
+
+  try {
+    const res = await fetch('/callback?code=' + code);
+    const data = await res.json();
+    if (data.access_token) {
+      accessToken = data.access_token;
+      refreshToken = data.refresh_token;
+      tokenExpiry = Date.now() + (data.expires_in * 1000);
+      localStorage.setItem('sp_refresh', refreshToken);
+      return true;
+    }
+  } catch(e) { console.error(e); }
+  return false;
+}
+
+async function tryRefresh() {
+  const rt = refreshToken || localStorage.getItem('sp_refresh');
+  if (!rt) return false;
+  try {
+    const res = await fetch('/refresh?token=' + encodeURIComponent(rt));
+    const data = await res.json();
+    if (data.access_token) {
+      accessToken = data.access_token;
+      tokenExpiry = Date.now() + (data.expires_in * 1000);
+      if (data.refresh_token) {
+        refreshToken = data.refresh_token;
+        localStorage.setItem('sp_refresh', refreshToken);
+      }
+      return true;
+    }
+  } catch(e) {}
+  return false;
+}
+
+async function ensureToken() {
+  if (!accessToken || Date.now() > tokenExpiry - 60000) {
+    return await tryRefresh();
+  }
+  return true;
+}
+
+// ── PLAYER ──
+async function fetchNowPlaying() {
+  if (!await ensureToken()) return;
+  try {
+    const res = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
+      headers: { Authorization: 'Bearer ' + accessToken }
+    });
+    if (res.status === 204) { setNotPlaying(); return; }
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data || !data.item) { setNotPlaying(); return; }
+    updateUI(data);
+  } catch(e) { console.error(e); }
+}
+
+function updateUI(data) {
+  const track    = data.item;
+  const title    = track.name;
+  const artist   = track.artists.map(a => a.name).join(', ');
+  const art      = track.album.images[0]?.url || '';
+  isPlaying      = data.is_playing;
+  currentProgress = data.progress_ms;
+  currentDuration = track.duration_ms;
+
+  // all title/artist fields
+  ['1','2','3','4','4b'].forEach(id => {
+    const t = document.getElementById('title-' + id);
+    const a = document.getElementById('artist-' + id);
+    if (t) t.textContent = title;
+    if (a) a.textContent = artist;
+  });
+
+  // album art
+  if (art) {
+    const img1 = document.getElementById('album-art-1');
+    const img4 = document.getElementById('album-art-4');
+    [img1, img4].forEach(img => { if(img){ img.src = art; img.style.display = 'block'; }});
+  }
+
+  // cassette screen
+  const cpText = document.getElementById('cp-screen-text');
+  if (cpText) cpText.textContent = title.toUpperCase();
+
+  // play/pause icons
+  updatePlayIcons(isPlaying);
+
+  // animations
+  const vinyl = document.getElementById('vinyl');
+  const boombox = document.getElementById('boombox');
+  const tonearm = document.getElementById('tonearm');
+  ['bb-reel-left','bb-reel-right','cp-reel-left','cp-reel-right'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('spinning', isPlaying);
+  });
+  if (vinyl) vinyl.classList.toggle('spinning', isPlaying);
+  if (boombox) boombox.classList.toggle('shaking', isPlaying);
+  if (tonearm) tonearm.classList.toggle('on-record', isPlaying);
+
+  // eq bars
+  document.querySelectorAll('.eq-bar').forEach(bar => {
+    bar.classList.toggle('animated', isPlaying);
+  });
+
+  // show player, hide connect
+  document.getElementById('connect-screen').style.display = 'none';
+  document.getElementById('not-playing').style.display = 'none';
+  document.getElementById(VIEW_NAMES[currentView]).classList.add('active');
+
+  // progress
+  updateProgress(currentProgress, currentDuration);
+  startProgressTick(isPlaying);
+}
+
+function setNotPlaying() {
+  document.getElementById('not-playing').style.display = 'block';
+  stopProgressTick();
+  updatePlayIcons(false);
+  ['vinyl','boombox'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.classList.remove('spinning','shaking'); }
+  });
+}
+
+function updatePlayIcons(playing) {
+  const pausePath = 'M6 19h4V5H6v14zm8-14v14h4V5h-4z';
+  const playPath  = 'M8 5v14l11-7z';
+  ['1','2','3','4','4b'].forEach(id => {
+    const icon = document.getElementById('playpause-icon-' + id);
+    if (icon) icon.querySelector('path').setAttribute('d', playing ? pausePath : playPath);
+  });
+}
+
+function updateProgress(ms, total) {
+  const pct = total > 0 ? (ms / total * 100).toFixed(2) + '%' : '0%';
+  ['1','2','3','4b'].forEach(id => {
+    const bar = document.getElementById('progress-' + id);
+    if (bar) bar.style.width = pct;
+  });
+  const ipodBar = document.getElementById('progress-4');
+  if (ipodBar) ipodBar.style.width = pct;
+
+  const fmt = (t) => {
+    const s = Math.floor(t / 1000);
+    return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0');
+  };
+
+  ['1','2','4'].forEach(id => {
+    const c = document.getElementById('time-current-' + id);
+    const t = document.getElementById('time-total-' + id);
+    if (c) c.textContent = fmt(ms);
+    if (t) t.textContent = fmt(total);
+  });
+}
+
+function startProgressTick(playing) {
+  clearInterval(progressInterval);
+  if (!playing) return;
+  progressInterval = setInterval(() => {
+    currentProgress = Math.min(currentProgress + 1000, currentDuration);
+    updateProgress(currentProgress, currentDuration);
+  }, 1000);
+}
+
+function stopProgressTick() { clearInterval(progressInterval); }
+
+async function togglePlay() {
+  if (!await ensureToken()) return;
+  const endpoint = isPlaying
+    ? 'https://api.spotify.com/v1/me/player/pause'
+    : 'https://api.spotify.com/v1/me/player/play';
+  await fetch(endpoint, {
+    method: 'PUT',
+    headers: { Authorization: 'Bearer ' + accessToken }
+  });
+  isPlaying = !isPlaying;
+  updatePlayIcons(isPlaying);
+  startProgressTick(isPlaying);
+
+  const vinyl = document.getElementById('vinyl');
+  const boombox = document.getElementById('boombox');
+  const tonearm = document.getElementById('tonearm');
+  if (vinyl) vinyl.classList.toggle('spinning', isPlaying);
+  if (boombox) boombox.classList.toggle('shaking', isPlaying);
+  if (tonearm) tonearm.classList.toggle('on-record', isPlaying);
+  ['bb-reel-left','bb-reel-right','cp-reel-left','cp-reel-right'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('spinning', isPlaying);
+  });
+  document.querySelectorAll('.eq-bar').forEach(b => b.classList.toggle('animated', isPlaying));
+}
+
+async function nextTrack() {
+  if (!await ensureToken()) return;
+  await fetch('https://api.spotify.com/v1/me/player/next', {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + accessToken }
+  });
+  setTimeout(fetchNowPlaying, 500);
+}
+
+async function prevTrack() {
+  if (!await ensureToken()) return;
+  await fetch('https://api.spotify.com/v1/me/player/previous', {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + accessToken }
+  });
+  setTimeout(fetchNowPlaying, 500);
+}
+
+// ── INIT ──
+async function init() {
+  const loading = document.getElementById('loading');
+
+  // check for OAuth callback
+  if (window.location.search.includes('code=')) {
+    const ok = await handleCallback();
+    if (ok) {
+      await fetchNowPlaying();
+      pollInterval = setInterval(fetchNowPlaying, 10000);
+    }
+  } else {
+    // try silent refresh
+    const ok = await tryRefresh();
+    if (ok) {
+      document.getElementById('connect-screen').style.display = 'none';
+      document.getElementById(VIEW_NAMES[currentView]).classList.add('active');
+      await fetchNowPlaying();
+      pollInterval = setInterval(fetchNowPlaying, 10000);
+    }
+  }
+
+  loading.classList.add('hidden');
+}
+
+init();
+</script>
+</body>
+</html>
