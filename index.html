@@ -4,14 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Elena Lee — Portfolio</title>
-<meta name="description" content="Designer & builder. Selected work, experience, and a few things I'm proud of.">
-
-<!--
-  4. Section "CONTACT" — swap in your email, resume link, socials.
-  in the About section, replace the .about-frame
-     div's content with <img src="your-photo.jpg" alt="..."> — the
-     frame styling (border, shadow) will apply automatically.
--->
+<meta name="description" content="">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,8 +21,8 @@
     --tan:     #AEA98A;
     --indigo:  #2B3168;
 
-    --paper:   #EEEFE2;   /* light section bg, tinted off the khaki */
-    --paper-2: #E4E5D4;   /* alt section bg */
+    --paper:   #EEEFE2;
+    --paper-2: #E4E5D4;
 
     --font-display: "Fraunces", Georgia, serif;
     --font-body: "Inter", -apple-system, sans-serif;
@@ -824,15 +817,6 @@
       // sky gradient dawn -> day
       root.style.setProperty('--sky-top', lerpColor(skyTopA, skyTopB, p));
       root.style.setProperty('--sky-bottom', lerpColor(skyBotA, skyBotB, p));
-
-      // sun rises + draws itself
-      var cx = lerp(300, 900, p);
-      var cy = lerp(500, 150, p);
-      sun.setAttribute('cx', cx);
-      sun.setAttribute('cy', cy);
-      sunGlow.setAttribute('cx', cx);
-      sunGlow.setAttribute('cy', cy);
-      sun.style.strokeDashoffset = sunCirc * (1 - p);
 
       // parallax ridges
       ridge1.style.transform = 'translateY(' + (-p * 26) + 'px)';
