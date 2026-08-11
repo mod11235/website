@@ -605,7 +605,7 @@
 </section>
 
 <!--  lol no-->
-  <section class="intro section-pad">
+<!-- <section class="intro section-pad">
   <div class="band">
     <div class="eyebrow reveal">Start here</div>
     <p class="intro-statement reveal" style="margin-top:22px;">
@@ -621,6 +621,7 @@
     </div>
   </div>
 </section>
+-->
 
 <!--abt-->
 <section class="about section-pad" id="about">
@@ -748,6 +749,8 @@
   </div>
 </section>
 
+<footer>© <span id="year"></span> ok </footer>
+
 <script>
   document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -859,6 +862,7 @@
   document.querySelectorAll('.reveal-stagger').forEach(function(group){
     io.observe(group);
   });
+
 </script>
 
 </body>
